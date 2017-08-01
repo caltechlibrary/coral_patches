@@ -1,0 +1,13 @@
+diff --git a/organizations/admin/classes/domain/Organization.php b/organizations/admin/classes/domain/Organization.php
+index 4e842d8..6f06adb 100644
+--- a/organizations/admin/classes/domain/Organization.php
++++ b/organizations/admin/classes/domain/Organization.php
+@@ -543,7 +543,7 @@ class Organization extends DatabaseObject {
+ 									LEFT JOIN ContactRoleProfile CRP ON C.contactID = CRP.contactID
+ 									LEFT JOIN ContactRole CR ON CR.contactRoleID = CRP.contactRoleID
+ 								" . $whereStatement . "
+-								GROUP By O.organizationID
++								GROUP BY O.organizationID, OHP.parentOrganizationID
+ 								ORDER BY " . $orderBy . $limitStatement;
+ 
+ 
