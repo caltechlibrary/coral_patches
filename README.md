@@ -8,10 +8,14 @@ creating a patch against the development branch use the following code template
 from within the `web` directory:
 
 ```
-git diff -w development..my-branch > ../patches/my-branch.development.patch
+git diff -w development my-branch > ../patches/development-##.my-branch.patch
 ```
 
-The `-w` flag tells Git to ignore all whitespace changes.
+The `-w` flag tells Git to ignore all whitespace changes. The `##` represents
+two digits for applying patches in sequence.
 
-_TODO:_ Create patches with a branch name in the filename to be applied to
-different installations (production/master or test/development).
+If a patch is applicable to all branches, name it like:
+
+```
+all-##.my-patch-name.patch
+```
