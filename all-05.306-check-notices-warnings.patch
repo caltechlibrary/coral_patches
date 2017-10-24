@@ -1,0 +1,28 @@
+From ddaa6967c73e879de60c0989ed890af64e6e467e Mon Sep 17 00:00:00 2001
+From: Tommy Keswick <tkeswick@caltech.edu>
+Date: Thu, 19 Oct 2017 23:27:08 +0000
+Subject: [PATCH] Add a custom action to check for PHP messages.
+
+---
+ tests/_support/AcceptanceTester.php | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/tests/_support/AcceptanceTester.php b/tests/_support/AcceptanceTester.php
+index 4c7dcbb6..57efec41 100644
+--- a/tests/_support/AcceptanceTester.php
++++ b/tests/_support/AcceptanceTester.php
+@@ -20,7 +20,11 @@ class AcceptanceTester extends \Codeception\Actor
+ {
+     use _generated\AcceptanceTesterActions;
+ 
+-   /**
+-    * Define custom actions here
+-    */
++	public function checkForPhpMessages() {
++		$I = $this;
++		$I->cantSee('Fatal error', 'b');
++		$I->cantSee('Warning', 'b');
++		$I->cantSee('Notice', 'b');
++	}
++
+ }
