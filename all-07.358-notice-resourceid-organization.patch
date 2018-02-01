@@ -1,0 +1,26 @@
+From 0fee45400c76403d5943941f754717a2dcb6e075 Mon Sep 17 00:00:00 2001
+From: Tommy Keswick <tkeswick@caltech.edu>
+Date: Wed, 31 Jan 2018 16:45:26 -0800
+Subject: [PATCH] Add isset() to fix PHP Notice: Undefined index: resourceID
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+in …/organizations/admin/classes/domain/Organization.php on line 504
+---
+ organizations/admin/classes/domain/Organization.php | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/organizations/admin/classes/domain/Organization.php b/organizations/admin/classes/domain/Organization.php
+index 1f4e7075..c56c851c 100644
+--- a/organizations/admin/classes/domain/Organization.php
++++ b/organizations/admin/classes/domain/Organization.php
+@@ -501,7 +501,7 @@ public function getResources($organizationRoleID = null){
+ 		$result = $this->db->processQuery($query, 'assoc');
+ 		//this is because processQuery has a bad habit of mixed return values
+ 		//TODO: change this, maybe, someday
+-		if ($result['resourceID']) {
++		if (isset($result['resourceID'])) {
+ 			$result = array($result);
+ 		}
+ 

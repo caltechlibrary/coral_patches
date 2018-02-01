@@ -1,0 +1,18 @@
+From 9dad0721ec56a63ac6dc6e89b5fbc94a8782c6ca Mon Sep 17 00:00:00 2001
+From: Tommy Keswick <tkeswick@caltech.edu>
+Date: Fri, 27 Oct 2017 15:05:40 -0700
+Subject: [PATCH] Issue #318: Modify `configuration` column type of
+ `ImportConfig` table.
+
+---
+ resources/install/protected/2.1.0/001-318.sql | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 resources/install/protected/2.1.0/001-318.sql
+
+diff --git a/resources/install/protected/2.1.0/001-318.sql b/resources/install/protected/2.1.0/001-318.sql
+new file mode 100644
+index 00000000..fd202b71
+--- /dev/null
++++ b/resources/install/protected/2.1.0/001-318.sql
+@@ -0,0 +1 @@
++ALTER TABLE `ImportConfig` MODIFY `configuration` TEXT;
