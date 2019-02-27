@@ -1,0 +1,113 @@
+From f69f3044064c8cd50fd39f3dc2fe2c53b4ed5ffe Mon Sep 17 00:00:00 2001
+From: Tommy Keswick <t4k@users.noreply.github.com>
+Date: Tue, 26 Feb 2019 17:28:03 -0800
+Subject: [PATCH] Issue #543: set $expression->lastUpdateDate
+
+The real changes besides white space include:
+
+- set `$expression->productionUseInd` to a string in the `else` clause
+- avoid rewriting `$expression->productionUseInd` immediately after the `else` clause (if it is an update and the value is already set, it would have been always overwritten)
+- set `$expression->lastUpdateDate = date('Y-m-d H:i:s');` so that we don't get the cannot be null error
+---
+ licensing/ajax_processing.php | 85 +++++++++++++++++------------------
+ 1 file changed, 42 insertions(+), 43 deletions(-)
+
+diff --git a/licensing/ajax_processing.php b/licensing/ajax_processing.php
+index aa95f126..0aeb3f01 100644
+--- a/licensing/ajax_processing.php
++++ b/licensing/ajax_processing.php
+@@ -255,52 +255,51 @@
+ 		break;
+ 
+ 
+-	//add/update expression
++    // add/update expression
+     case 'submitExpression':
+ 
+-    	//if expressionID is sent then this is an update
+-    	if ((isset($_POST['expressionID'])) && ($_POST['expressionID'] != '')){
+-    		$expressionID = $_POST['expressionID'];
+- 			$expression = new Expression(new NamedArguments(array('primaryKey' => $expressionID)));
+-    	}else{
+- 			$expression = new Expression();
+- 			//default production use (terms tool indicator) to off if this is an add, otherwise we leave it alone
+-			$expression->productionUseInd	= 0;
+-			$expression->expressionID = '';
+-		}
++      // if expressionID is sent then this is an update
++      if ((isset($_POST['expressionID'])) && ($_POST['expressionID'] != '')) {
++        $expressionID = $_POST['expressionID'];
++        $expression = new Expression(new NamedArguments(array('primaryKey' => $expressionID)));
++      }
++      else {
++        $expression = new Expression();
++        $expression->expressionID = '';
++        // set production use (terms tool indicator) to off when this is an add
++        $expression->productionUseInd = '0';
++      }
++
++      $expression->documentID = $_POST['documentID'];
++      $expression->expressionTypeID = $_POST['expressionTypeID'];
++      $expression->documentText = $_POST['documentText'];
++      $expression->simplifiedText = '';
++      $expression->lastUpdateDate = date('Y-m-d H:i:s');
++
++      try {
++        $expression->save();
++
++        if (!$expressionID) {
++          $expressionID = $expression->primaryKey;
++        }
++
++        // first remove all qualifiers
++        $expression->removeQualifiers();
++        // then add them back
++        foreach (explode(',', $_POST['qualifiers']) as $id) {
++          if ($id) {
++            $expressionQualifierProfile = new ExpressionQualifierProfile();
++            $expressionQualifierProfile->expressionID = $expressionID;
++            $expressionQualifierProfile->qualifierID = $id;
++            $expressionQualifierProfile->save();
++          }
++        }
++      }
++      catch (Exception $e) {
++        echo $e->getMessage();
++      }
+ 
+-		$expression->documentText		= $_POST['documentText'];
+-		$expression->documentID 		= $_POST['documentID'];
+-		$expression->expressionTypeID	= $_POST['expressionTypeID'];
+-		$expression->productionUseInd	= '0';
+-		$expression->simplifiedText		= '';
+-
+-		try {
+-			$expression->save();
+-
+-			if (!$expressionID){
+-				$expressionID=$expression->primaryKey;
+-			}
+-
+-			//first remove all qualifiers, then we'll add them back
+-			$expression->removeQualifiers();
+-
+-			foreach (explode(',', $_POST['qualifiers']) as $id){
+-				if ($id){
+-					$expressionQualifierProfile = new ExpressionQualifierProfile();
+-					$expressionQualifierProfile->expressionID = $expressionID;
+-					$expressionQualifierProfile->qualifierID = $id;
+-					$expressionQualifierProfile->save();
+-				}
+-			}
+-
+-
+-
+-		} catch (Exception $e) {
+-			echo $e->getMessage();
+-		}
+-
+-        break;
++      break;
+ 
+ 
+     case 'deleteExpression':
