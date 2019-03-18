@@ -1,0 +1,33 @@
+From f908dc771a288ba7da55f1ca4dbf4427def1796b Mon Sep 17 00:00:00 2001
+From: Tommy Keswick <t4k@users.noreply.github.com>
+Date: Tue, 12 Mar 2019 15:29:58 -0700
+Subject: [PATCH] 556, make Authorized Sites compatible with multiple ordering
+
+Issue #556.
+
+Allows Authorized Sites to be removed.
+---
+ resources/ajax_processing/submitAccess.php | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/resources/ajax_processing/submitAccess.php b/resources/ajax_processing/submitAccess.php
+index 9f549297..2983279f 100644
+--- a/resources/ajax_processing/submitAccess.php
++++ b/resources/ajax_processing/submitAccess.php
+@@ -1,7 +1,5 @@
+ <?php
+-		$resourceID = $_POST['resourceID'];
+ 		$resourceAcquisitionID = $_POST['resourceAcquisitionID'];
+-		$resource = new Resource(new NamedArguments(array('primaryKey' => $resourceID)));
+ 		$resourceAcquisition = new ResourceAcquisition(new NamedArguments(array('primaryKey' => $resourceAcquisitionID)));
+ 
+ 		$resourceAcquisition->authenticationTypeID 	    = $_POST['authenticationTypeID'];
+@@ -34,7 +32,7 @@
+ 
+ 
+ 			//first remove all authorized sites, then we'll add them back
+-			$resource->removeAuthorizedSites();
++			$resourceAcquisition->removeAuthorizedSites();
+ 
+ 			foreach (explode(':::',$_POST['authorizedSites']) as $key => $value){
+ 				if ($value){
